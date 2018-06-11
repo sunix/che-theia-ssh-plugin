@@ -9,7 +9,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { inject, injectable } from 'inversify';
 import { SshKeyPair } from '../common/ssh-protocol';
 import { WsMasterHttpClient } from './ws-master-http-client';
 
@@ -87,9 +86,8 @@ export interface SshKeyServiceClient {
  * service specific REST calls and process responses correspondingly (in
  * accordance to their HTTP statuses).
  */
-@injectable()
 export class SshKeyServiceHttpClient implements SshKeyServiceClient {
-    constructor(@inject(WsMasterHttpClient) protected readonly wsMasterHttpClient: WsMasterHttpClient) {
+    constructor(protected readonly wsMasterHttpClient: WsMasterHttpClient) {
     }
 
     /**

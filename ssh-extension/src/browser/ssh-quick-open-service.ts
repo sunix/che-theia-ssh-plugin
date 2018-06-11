@@ -9,12 +9,10 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { inject, injectable } from 'inversify';
 import { MessageService } from '@theia/core';
 import { QuickOpenOptions, QuickOpenMode } from '@theia/core/lib/browser';
 import { QuickOpenService, QuickOpenModel, QuickOpenItem } from '@theia/core/lib/browser/quick-open/';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
-import { ClipboardService } from './clipboard-service';
 import { SshKeyServer, SshKeyPair } from '../common/ssh-protocol';
 
 export interface CheService {
@@ -23,7 +21,6 @@ export interface CheService {
     description: string
 }
 
-@injectable()
 export class SshQuickOpenService {
 
     /**
@@ -33,11 +30,10 @@ export class SshQuickOpenService {
     protected readonly downloadAction = 'Download';
 
     constructor(
-        @inject(QuickOpenService) protected readonly quickOpenService: QuickOpenService,
-        @inject(SshKeyServer) protected readonly sshKeyServer: SshKeyServer,
-        @inject(MessageService) protected readonly messageService: MessageService,
-        @inject(ClipboardService) protected readonly clipboardService: ClipboardService,
-        @inject(WindowService) protected readonly windowService: WindowService
+        protected readonly quickOpenService: QuickOpenService,
+        protected readonly sshKeyServer: SshKeyServer,
+        protected readonly messageService: MessageService,
+        protected readonly windowService: WindowService
     ) {
         this.services = [
             { name: 'vcs', displayName: 'VCS', description: 'SSH keys used by Che VCS plugins' },
@@ -84,9 +80,9 @@ export class SshQuickOpenService {
                     }
                     acceptor(items);
                 }
-            }
+            };
             this.quickOpenService.open(quickOpenModel, this.getOptions('public key', false));
-        }
+        };
         this.chooseServiceAndName('Pick a Che service to upload the public key for', executeFn, false);
     }
 
@@ -108,7 +104,7 @@ export class SshQuickOpenService {
             const chosenKeyPair = item.getKeyPair();
             const publicKey = chosenKeyPair.publicKey;
             if (publicKey && publicKey.length) {
-                this.clipboardService.copy(publicKey);
+                // this.clipboardService.copy(publicKey);
             } else {
                 this.messageService.info(`Key pair ${chosenKeyPair.name} doesn't contain a public key`);
             }

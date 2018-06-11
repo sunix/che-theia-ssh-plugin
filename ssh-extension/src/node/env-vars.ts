@@ -9,8 +9,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { injectable } from 'inversify';
-
 /**
  * Enumeration of currently supported environment variable names
  */
@@ -51,7 +49,7 @@ enum VarNames {
     CHE_WORKSPACE_ID = 'CHE_WORKSPACE_ID'
 }
 
-@injectable()
+
 export class EnvVars {
 
     private readonly vars: Map<string, string> = new Map();

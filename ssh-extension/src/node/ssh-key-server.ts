@@ -9,17 +9,15 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { inject, injectable } from 'inversify';
 import { SshKeyPair, SshKeyServer } from '../common/ssh-protocol';
 import { SshKeyManager } from './ssh-key-manager';
 
 /**
  * Server implementation of SSH key pair API
  */
-@injectable()
 export class SshKeyServerImpl implements SshKeyServer {
 
-    constructor(@inject(SshKeyManager) protected readonly sshKeyManager: SshKeyManager) {
+    constructor(protected readonly sshKeyManager: SshKeyManager) {
     }
 
     /**

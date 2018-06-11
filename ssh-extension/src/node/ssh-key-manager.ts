@@ -9,7 +9,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { inject, injectable } from 'inversify';
 import { SshKeyPair } from '../common/ssh-protocol';
 import { SshKeyServiceClient } from './ssh-key-service-client';
 
@@ -81,10 +80,10 @@ export interface SshKeyManager {
  * A remote SSH key paris manager that uses {@link SshKeyServiceClient} for
  * all SHH key related operations.
  */
-@injectable()
+
 export class RemoteSshKeyManager implements SshKeyManager {
 
-    constructor(@inject(SshKeyServiceClient) protected readonly sshKeyServiceClient: SshKeyServiceClient) {
+    constructor(protected readonly sshKeyServiceClient: SshKeyServiceClient) {
     }
 
     /**
