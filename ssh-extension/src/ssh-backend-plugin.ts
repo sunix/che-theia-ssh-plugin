@@ -1,12 +1,12 @@
 /**
  * Generated using theia-plugin-generator
  */
-import * as theia from '@wiptheia/plugin';
-import {Command} from "@theia/core";
-import {RemoteSshKeyManager, SshKeyManager} from "./node/ssh-key-manager";
-import {SshKeyServiceClient, SshKeyServiceHttpClient} from "./node/ssh-key-service-client";
-import {WsMasterHttpClient} from "./node/ws-master-http-client";
-import {CheService} from "./browser/ssh-quick-open-service";
+import * as theia from '@theia/plugin';
+import { Command } from "@theia/core";
+import { RemoteSshKeyManager, SshKeyManager } from "./node/ssh-key-manager";
+import { SshKeyServiceClient, SshKeyServiceHttpClient } from "./node/ssh-key-service-client";
+import { WsMasterHttpClient } from "./node/ws-master-http-client";
+import { CheService } from "./browser/ssh-quick-open-service";
 
 const disposables: theia.Disposable[] = [];
 
@@ -31,36 +31,37 @@ export function start() {
         id: 'ssh:generate',
         label: 'SSH: generate key pair...'
     };
-    // const CREATE: Command = {
-    //     id: 'ssh:create',
-    //     label: 'SSH: create key pair...'
-    // };
-    console.log(sshkeyManager);
 
-    disposables.push(theia.commands.registerCommand(GENERATE, generateKeyPair));
+    disposables.push(theia.commands.registerCommand(GENERATE, () => {
+        generateKeyPair(sshkeyManager);
+    }));
 
 }
 
-const generateKeyPair = function (): void {
+const generateKeyPair = async function (sshkeyManager: SshKeyManager): Promise<void> {
     const option: theia.QuickPickOptions = {
         machOnDescription: true,
         machOnDetail: true,
         canPickMany: false,
         placeHolder: "Select object:"
     };
-    theia.window.showQuickPick<theia.QuickPickItem>(new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(
-                services.map(service => {
-                    return {label: service.displayName, description: service.description, detail: service.name}
-                })
-            );
-        }, 500);
-    }), option).then(val => {
-        const value: any = val;
-        theia.window.showInformationMessage(value.description);
-    });
-}
+    const sshServiceValue: any = await theia.window.showQuickPick<theia.QuickPickItem>(new Promise((resolve) => {
+        resolve(
+            services.map(service => {
+                return {label: service.displayName, description: service.description, detail: service.name, name: service.name}
+            })
+        );
+    }), option);
+
+    const keyName = await theia.window.showInputBox({placeHolder: 'Please provide a key pair name'});
+    const key = await sshkeyManager.generate(sshServiceValue.name, keyName ? keyName : '');
+    const downloadAction = 'Download';
+    const action = await theia.window.showInformationMessage('Do you want to download generated private key?', downloadAction)
+    if (action == downloadAction) {
+        //Todo open download window with private key;
+        console.log(key);
+    }
+};
 
 export function stop() {
     while (disposables.length) {
@@ -70,5 +71,3 @@ export function stop() {
         }
     }
 }
-
-
